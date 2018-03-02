@@ -2,35 +2,35 @@ let names = [];
 let newName;
 
 $(document).ready(function() {
-  console.log("READY!!");
   function populateNames() {
     $.ajax ({
       url: "https://swapi.co/api/people/",
       method: "GET"
     }).done(function(res) {
-      console.log(res);
       res.results.forEach(function(people) {
         names.push(people.name);
       });
-      // console.log(names);
     });
   };
 
   function showResults(name) {
+    $(".character").empty();
     queryUrl = "https://swapi.co/api/people/?search=" + name;
-    console.log(queryUrl);
     $.ajax ({
       url: queryUrl,
       method: "GET"
     }).done(function(res) {
-      console.log(res.results);
-      let charRes = JSON.stringify(res.results, null, 1);
-      $(".character").append(charRes);
+      let charRes = res.results[0];
+      Object.keys(charRes).forEach(function(key) {
+        let attribute = $("<span>");
+        attribute.text(key + ": " + charRes[key]);
+        attribute.append($("<br>"));
+        attribute.appendTo(".character");
+      });
     });
   }
 
   populateNames();
-  console.log(names);
   
   $("#name").autocomplete({source: names});
   
